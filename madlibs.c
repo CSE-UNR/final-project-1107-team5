@@ -18,7 +18,7 @@ int punctuation(char c);
 int main(){
 	
 	int i, l = 0;
-	char ch = '0', *cp = &ch, responses[MAXMADLIB][MAXRESPONSE];
+	char ch = '0', responses[MAXMADLIB][MAXRESPONSE];
 	FILE *mad;
 	mad = fopen(FILENAME, "r");
 	if(mad == NULL){
