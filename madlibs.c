@@ -5,52 +5,36 @@
 #include <stdio.h>
 
 #define FILENAME "madlib2.txt"
-#define MAXRESPONSE 100
+#define MAXLINE 100
 #define MAXMADLIB 50
 
-void prompt(FILE *fp, char resp[MAXMADLIB][MAXRESPONSE], int ind);
+void prompt(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind);
 void copy(FILE *fp);
-void replace(FILE *fp, char resp[MAXMADLIB][MAXRESPONSE], int ind);
+void replace(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind);
 void endcopy(FILE *fp);
-void getlength(FILE *fp, int* length);
+void readfile(FILE *fp, char file[MAXMADLIB][MAXLINE], int* length);
 int punctuation(char c);
 
 int main(){
 	
 	int i, l = 0;
-	char ch = '0', responses[MAXMADLIB][MAXRESPONSE];
+	char ch = '0', file[MAXMADLIB][MAXLINE], responses[1][1];
 	FILE *mad;
 	mad = fopen(FILENAME, "r");
 	if(mad == NULL){
 		printf("Error Opening File");
 		return 0;
 	}
-	 
-	getlength(mad, &l);
-	mad = fopen(FILENAME, "r");
-	i = 1;
-	while(i < l){
-		if(i % 2 == 0){
-			prompt(mad, responses, (i/2 - 1));
-		}
-		(ch = fgetc(mad));
-		if(ch == '\n'){
-			i++;
-		}
-	}
-	printf("\nYour Madlib:\n\n");
-	mad = fopen(FILENAME, "r");
-	for(i = 0; i < (l/2-1); i++){
-		copy(mad);
-		replace(mad, responses, i);
-	}
-	endcopy(mad);
-	fclose(mad);
 	
+	readfile(mad, file, &l);
+	printf("%d\n", &l);
+	for(i = 0; i < l-1; i++){
+		printf("%s", file[i]);
+	}
 	return 0;
 }
 
-void prompt(FILE *fp, char resp[MAXMADLIB][MAXRESPONSE], int ind){
+void prompt(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind){
 
 	char type;
 	type = fgetc(fp);
@@ -76,7 +60,7 @@ void copy(FILE *fp){
 	}
 }
 
-void replace(FILE *fp, char resp[MAXMADLIB][MAXRESPONSE], int ind){
+void replace(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind){
 
 	char hold;
 	printf(" %s", &resp[ind]);
@@ -99,14 +83,12 @@ void endcopy(FILE *fp){
 	printf("\n\n");
 }
 	
-void getlength(FILE *fp, int* length){
+void readfile(FILE *fp, char file[MAXMADLIB][MAXLINE], int* length){
 
-	char c;	
-	while((c = fgetc(fp)) != EOF){
-		if(c == '\n'){
-			*length += 1;
-		}
+	int i;
+	for(i = 0; (fgets(file[i], MAXLINE, fp)); i++){
 	}
+	*length = i + 1;
 }
 			
 int punctuation(char c){

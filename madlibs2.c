@@ -25,7 +25,7 @@ int main(){
 	printf("\n");
 	mad = fopen(filename, "r");
 	if(mad == NULL){
-		printf("Error Opening File");
+		printf("Error Opening File\n");
 		return 0;
 	}
 	 
