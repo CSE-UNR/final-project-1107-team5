@@ -6,19 +6,20 @@
 
 #define FILENAME "madlib2.txt"
 #define MAXLINE 100
-#define MAXMADLIB 50
+#define MAXMADLIB 250
 
-void prompt(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind);
-void copy(FILE *fp);
-void replace(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind);
-void endcopy(FILE *fp);
+void adj(char file[MAXMADLIB][MAXLINE], int ind);
+void noun(char file[MAXMADLIB][MAXLINE], int ind);
+void verb(char file[MAXMADLIB][MAXLINE], int ind);
+void replace(char file[MAXMADLIB][MAXLINE], int length);
 void readfile(FILE *fp, char file[MAXMADLIB][MAXLINE], int* length);
+void print(char file[MAXMADLIB][MAXLINE], int length);
 int punctuation(char c);
 
 int main(){
 	
 	int i, l = 0;
-	char ch = '0', file[MAXMADLIB][MAXLINE], responses[1][1];
+	char ch = '0', file[MAXMADLIB][MAXLINE];
 	FILE *mad;
 	mad = fopen(FILENAME, "r");
 	if(mad == NULL){
@@ -27,70 +28,38 @@ int main(){
 	}
 	
 	readfile(mad, file, &l);
-	printf("%d\n", &l);
-	for(i = 0; i < l-1; i++){
-		printf("%s", file[i]);
-	}
+	replace(file, l);
+	printf("\nYour madlib:\n\n");
+	print(file, l);
+	printf("\n");
+	fclose(mad);
 	return 0;
 }
 
-void prompt(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind){
-
-	char type;
-	type = fgetc(fp);
-	if(type == 'A'){
-		printf("Please enter an adjective: ");
-		scanf("%s", &resp[ind]);
-	}else if(type == 'N'){
-		printf("Please enter a noun: ");
-		scanf("%s", &resp[ind]);
-	}else if(type == 'V'){
-		printf("Please enter a verb: ");
-		scanf("%s", &resp[ind]);
-	}else{
-		printf("Error: Invalid Madlib Identifier");
-	}
-}
-
-void copy(FILE *fp){
-	
-	char c;
-	while((c = fgetc(fp)) != '\n'){
-		printf("%c", c);
-	}
-}
-
-void replace(FILE *fp, char resp[MAXMADLIB][MAXLINE], int ind){
-
-	char hold;
-	printf(" %s", &resp[ind]);
-	fgetc(fp);
-	fgetc(fp);
-	hold = fgetc(fp);
-	if(punctuation(hold) == 0){
-		printf("%c", hold);
-	}else{
-		printf(" %c", hold);
-	}
-}
-
-void endcopy(FILE *fp){
-	
-	char c;
-	while((c = fgetc(fp)) != '\n'){
-		printf("%c", c);
-	}
-	printf("\n\n");
-}
 	
 void readfile(FILE *fp, char file[MAXMADLIB][MAXLINE], int* length){
-
-	int i;
-	for(i = 0; (fgets(file[i], MAXLINE, fp)); i++){
+	
+	while(fgets(file[*length], MAXLINE, fp)){
+		*length += 1;
 	}
-	*length = i + 1;
 }
-			
+		
+void replace(char file[MAXMADLIB][MAXLINE], int length){
+
+	int i, n;
+	for(i = 0; i < length-1; i++){
+		if(file[i][0] == 'A' && file[i][1] == '\n'){
+			adj(file, i);
+		}else if(file[i][0] == 'N' && file[i][1] == '\n'){
+			noun(file, i);
+		}else if(file[i][0] == 'V' && file[i][1] == '\n'){
+			verb(file, i);
+		}
+		
+	}
+}
+	
+	
 int punctuation(char c){
 	
 	if(c == ',' || c == '.' || c == '?' || c == ';' || c == ':' || c == '"' || c == '-' || c == '}' || c == ']' || c == ')' || c == '!'){
@@ -100,6 +69,44 @@ int punctuation(char c){
 	}
 }
 	
+void adj(char file[MAXMADLIB][MAXLINE], int ind){
+	
+	printf("Enter an adjective: ");
+	fgets(file[ind], MAXLINE, stdin);
+	
+}
+	
+void noun(char file[MAXMADLIB][MAXLINE], int ind){
+	
+	printf("Enter a noun: ");
+	fgets(file[ind], MAXLINE, stdin);
+	
+}
+
+void verb(char file[MAXMADLIB][MAXLINE], int ind){
+	
+	printf("Enter a verb: ");
+	fgets(file[ind], MAXLINE, stdin);
+	
+}
+	
+void print(char file[MAXMADLIB][MAXLINE], int length){
+	
+	int i, n;
+	
+	for(i = 0; i < length-1; i++){
+		for(n = 0; n < MAXMADLIB; n++){
+			if(file[i][n] == '\n'){
+				file[i][n] = '\0';
+			}
+		}
+		if(punctuation(file[i+1][0]) == 0){
+			printf("%s", file[i]);
+		}else{
+			printf("%s ", file[i]);
+		}
+	}
+}
 	
 				
 	
